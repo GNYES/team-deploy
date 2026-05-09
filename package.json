@@ -1,0 +1,17 @@
+{
+  "name": "team-deploy-full",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TeamDeploy - 团队铺设管理系统",
+  "scripts": {
+    "dev:app": "cd app && npm run dev",
+    "dev:admin": "cd admin && npm run dev",
+    "build:app": "cd app && npm run build",
+    "build:admin": "cd admin && npm run build",
+    "build:all": "npm run build:app && npm run build:admin"
+  },
+  "workspaces": [
+    "app",
+    "admin"
+  ]
+}
