@@ -24,6 +24,38 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Configure Gradle wrapper mirror
+        run: |
+          cd app/android/gradle/wrapper/
+          sed -i 's|https://services.gradle.org/distributions/|https://mirrors.cloud.tencent.com/gradle/|' gradle-wrapper.properties
+          sed -i 's|networkTimeout=10000|networkTimeout=300000|' gradle-wrapper.properties
+
+      - name: Configure Maven mirror
+        run: |
+          cd app/android
+          cat > build.gradle << 'GRADLE'
+buildscript {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.13.0'
+        classpath 'com.google.gms:google-services:4.4.4'
+    }
+}
+apply from: "variables.gradle"
+allprojects {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+    }
+}
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+GRADLE
+
       - name: Install dependencies
         working-directory: ./app
         run: npm install
