@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#2563EB" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>TeamDeploy - 团队铺设管理</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlRlYW1EZXBsb3kgLSB5piv6Zuq6ZOB6K+3566h55CGIiwKICAic2hvcnRfbmFtZSI6ICJUZWFtRGVwbG95IiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwMDAwMDAiLAogICJ0aGVtZV9jb2xvciI6ICIjMjU2M0VCIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMjAwIDIwMCc+PHJlY3Qgd2lkdGg9JzIwMCcgaGVpZ2h0PScyMDAnIGZpbGw9JyMyNTYzRUInLz48dGV4dCB4PSc1MCUnIHk9JzUwJScgZG9taW5hbnQtYmFzZWxpbmU9J21pZGRsZScgdGV4dC1hbmNob3I9J21pZGRsZScgZmlsbD0nd2hpdGUnIGZvbnQtc2l6ZT0nODAnIGZvbnQtZmFtaWx5PSdBcmlhbCcgZmlsbD0nd2hpdGUnPlRNPC90ZXh0Pjwvc3ZnPiIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0KICBdCn0=">
+    <style>
+      * { margin:0; padding:0; box-sizing:border-box; }
+      body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; background:#f8fafc; color:#1e293b; }
+      .container { max-width:600px; margin:0 auto; padding:20px; }
+      .header { background:linear-gradient(135deg,#2563EB,#1D4ED8); color:white; padding:30px 20px; border-radius:20px; margin-bottom:20px; text-align:center; }
+      .header h1 { font-size:28px; margin-bottom:8px; }
+      .header p { opacity:0.9; font-size:15px; }
+      .card { background:white; border-radius:16px; padding:20px; margin-bottom:15px; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
+      .card h3 { font-size:18px; margin-bottom:12px; color:#334155; display:flex; align-items:center; gap:10px; }
+      .icon { width:24px; height:24px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:16px; }
+      .btn { display:block; width:100%; padding:14px; background:#2563EB; color:white; border:none; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer; margin-top:10px; transition:all 0.2s; }
+      .btn:hover { background:#1D4ED8; transform:translateY(-1px); }
+      .btn.secondary { background:#f1f5f9; color:#475569; }
+      .btn.secondary:hover { background:#e2e8f0; }
+      .info { text-align:center; color:#64748b; font-size:14px; margin-top:20px; line-height:1.6; }
+      .feature { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid #f1f5f9; }
+      .feature:last-child { border-bottom:none; }
+      .feature-text { flex:1; }
+      .feature-text h4 { font-size:15px; margin-bottom:4px; }
+      .feature-text p { font-size:13px; color:#64748b; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📱 TeamDeploy</h1>
+        <p>团队铺设管理应用</p>
+      </div>
+      
+      <div class="card">
+        <h3><span class="icon" style="background:#dbeafe; color:#2563EB;">⚡</span>快速开始</h3>
+        <p style="font-size:14px; color:#64748b; line-height:1.8;">
+          欢迎使用团队铺设管理系统！此应用包含完整的团队管理、数据录入和业绩统计功能。
+        </p>
+      </div>
+      
+      <div class="card">
+        <h3><span class="icon" style="background:#dcfce7; color:#16a34a;">✨</span>应用功能</h3>
+        <div class="feature">
+          <span class="icon" style="background:#fef3c7; color:#d97706;">👥</span>
+          <div class="feature-text">
+            <h4>团队管理</h4>
+            <p>多层级城市/区域/团队/个人管理</p>
+          </div>
+        </div>
+        <div class="feature">
+          <span class="icon" style="background:#fce7f3; color:#db2777;">📊</span>
+          <div class="feature-text">
+            <h4>业绩统计</h4>
+            <p>设备数、蓝环数排行榜</p>
+          </div>
+        </div>
+        <div class="feature">
+          <span class="icon" style="background:#fef3c7; color:#f59e0b;">💰</span>
+          <div class="feature-text">
+            <h4>薪资计算</h4>
+            <p>基于单价和底薪的收入统计</p>
+          </div>
+        </div>
+        <div class="feature">
+          <span class="icon" style="background:#ddd6fe; color:#7c3aed;">🏆</span>
+          <div class="feature-text">
+            <h4>成就系统</h4>
+            <p>社区和成就徽章系统</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:#dbeafe; color:#2563EB;">📱</span>使用说明</h3>
+        <p style="font-size:14px; color:#64748b; line-height:1.8; margin-bottom:10px;">
+          <b>方式1 (推荐):</b> 添加到主屏幕，获得原生应用体验
+        </p>
+        <p style="font-size:14px; color:#64748b; line-height:1.8;">
+          <b>方式2:</b> 直接在浏览器中访问使用
+        </p>
+      </div>
+
+      <button class="btn" onclick="showDownloadInfo()">⬇️ 获取完整应用</button>
+      
+      <div class="info">
+        <p>完整应用已在GitHub构建中，</p>
+        <p>APK下载链接即将准备就绪！</p>
+      </div>
+    </div>
+
+    <script>
+      function showDownloadInfo() {
+        alert('正在为您准备APK下载中，请稍候...\n\n同时，您可以将此页面添加到手机主屏幕，立即体验Web版本！');
+      }
+      
+      if ('serviceWorker' in navigator) {
+        console.log('PWA support available');
+      }
+    </script>
+  </body>
+</html>
