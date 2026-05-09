@@ -35,11 +35,7 @@ jobs:
         working-directory: ./app
         run: npm run build
 
-      - name: Add Android platform
-        working-directory: ./app
-        run: npx cap add android
-
-      - name: Sync to Android
+      - name: Sync to Android (without re-adding platform)
         working-directory: ./app
         run: npx cap sync android
 
