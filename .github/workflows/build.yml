@@ -19,24 +19,28 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22'
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '17'
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
       - name: Install dependencies
         working-directory: ./app
-        run: npm install
+        run: npm ci
 
       - name: Build Web App
         working-directory: ./app
         run: npm run build
+
+      - name: Add Android platform
+        working-directory: ./app
+        run: npx cap add android || echo "Android platform already exists"
 
       - name: Sync to Android
         working-directory: ./app
