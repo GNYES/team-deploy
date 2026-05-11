@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAdminStore } from '@/stores/adminStore';
-import { SaveIcon, TrashIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { TrashIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
 export default function Settings() {
   const store = useAdminStore();

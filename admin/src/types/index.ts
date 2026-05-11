@@ -94,3 +94,44 @@ export interface SystemStats {
   totalTeams: number;
   monthIncome: number;
 }
+
+export interface DeviceRecord {
+  id: string;
+  userName: string;
+  phone: string;
+  team: string;
+  date: string;
+  checkInCount: number;
+  onlineDays30: number;
+  onlineDays10: number;
+  onlinePersons20: number;
+  deviceCount: number;
+  status: 'qualified' | 'unqualified' | 'not_started';
+  note?: string;
+}
+
+export interface DeviceAnalysis {
+  id: string;
+  analysisDate: string;
+  period: string;
+  totalUsers: number;
+  qualifiedUsers: number;
+  unqualifiedUsers: number;
+  notStartedUsers: number;
+  qualificationRate: number;
+  records: DeviceRecord[];
+}
+
+export interface SalaryCalculation {
+  userId: string;
+  userName: string;
+  team: string;
+  baseSalary: number;
+  deviceCount: number;
+  devicePrice: number;
+  deviceTotal: number;
+  grossSalary: number;
+  status: 'qualified' | 'unqualified' | 'not_started';
+  qualifiedConditions: string[];
+  unqualifiedConditions: string[];
+}

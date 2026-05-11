@@ -7,6 +7,7 @@ import Records from '@/pages/Records';
 import Salary from '@/pages/Salary';
 import ImportExport from '@/pages/ImportExport';
 import Settings from '@/pages/Settings';
+import DeviceAnalysis from '@/pages/DeviceAnalysis';
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="/records" element={<Records />} />
             <Route path="/salary" element={<Salary />} />
             <Route path="/import-export" element={<ImportExport />} />
+            <Route path="/device-analysis" element={<DeviceAnalysis />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>

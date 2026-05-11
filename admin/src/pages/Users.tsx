@@ -16,7 +16,7 @@ export default function Users() {
     name: '',
     phone: '',
     team: '',
-    role: 'member' as const,
+    role: 'member' as 'member' | 'leader' | 'admin',
     devices: 0,
     rings: 0,
   });

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { SalaryConfig, User, Team, DeployRecord, IncomeRecord, Achievement, DailyTask, SystemStats, CommissionTier } from '@/types';
+import type { SalaryConfig, User, Team, DeployRecord, IncomeRecord, Achievement, DailyTask, SystemStats, CommissionTier, DeviceRecord, DeviceAnalysis, SalaryCalculation } from '@/types';
 
 interface AdminStore {
   salaryConfig: SalaryConfig;
@@ -10,8 +10,12 @@ interface AdminStore {
   incomeRecords: IncomeRecord[];
   achievements: Achievement[];
   dailyTasks: DailyTask[];
+  deviceAnalyses: DeviceAnalysis[];
+  devicePrice: number;
+  baseSalary: number;
   
   updateSalaryConfig: (config: Partial<SalaryConfig>) => void;
+  updateDevicePrice: (price: number) => void;
   addUser: (user: Omit<User, 'id' | 'createdAt'>) => void;
   updateUser: (id: string, data: Partial<User>) => void;
   deleteUser: (id: string) => void;
@@ -24,6 +28,10 @@ interface AdminStore {
   exportData: (type: 'users' | 'teams' | 'records' | 'salary') => any[];
   calculateIncome: (devices: number, rings: number) => IncomeRecord;
   getStats: () => SystemStats;
+  importDeviceData: (data: Partial<DeviceRecord>[]) => void;
+  analyzeDeviceData: () => DeviceAnalysis;
+  calculateSalary: () => SalaryCalculation[];
+  getDeviceAnalysisHistory: () => DeviceAnalysis[];
 }
 
 const defaultSalaryConfig: SalaryConfig = {
@@ -89,11 +97,18 @@ export const useAdminStore = create<AdminStore>()(
         { id: '1', title: '铺设任务', description: '每日铺设设备目标', target: 5, reward: 100, active: true },
         { id: '2', title: '蓝环任务', description: '每日铺设蓝环目标', target: 10, reward: 50, active: true },
       ],
+      deviceAnalyses: [],
+      devicePrice: 100,
+      baseSalary: 3000,
 
       updateSalaryConfig: (config) => {
         set((state) => ({
           salaryConfig: { ...state.salaryConfig, ...config, updatedAt: new Date().toISOString() },
         }));
+      },
+
+      updateDevicePrice: (price) => {
+        set({ devicePrice: price, baseSalary: 3000 });
       },
 
       addUser: (user) => {
@@ -233,6 +248,154 @@ export const useAdminStore = create<AdminStore>()(
             return acc + income.netIncome;
           }, 0),
         };
+      },
+
+      importDeviceData: (data) => {
+        const currentAnalysis = get().deviceAnalyses[get().deviceAnalyses.length - 1];
+        if (currentAnalysis) {
+          const updatedRecords = currentAnalysis.records.map((existing) => {
+            const newData = data.find((d) => d.userName === existing.userName);
+            if (newData) {
+              return { ...existing, ...newData };
+            }
+            return existing;
+          });
+          
+          const existingNames = new Set(currentAnalysis.records.map((r) => r.userName));
+          const newRecords = data
+            .filter((d) => !existingNames.has(d.userName || ''))
+            .map((d, idx) => ({
+              id: 'device_' + Date.now() + '_' + idx,
+              userName: d.userName || '未知',
+              phone: d.phone || '',
+              team: d.team || '默认团队',
+              date: d.date || new Date().toISOString().split('T')[0],
+              checkInCount: d.checkInCount || 0,
+              onlineDays30: d.onlineDays30 || 0,
+              onlineDays10: d.onlineDays10 || 0,
+              onlinePersons20: d.onlinePersons20 || 0,
+              deviceCount: d.deviceCount || 0,
+              status: 'not_started' as const,
+              note: d.note,
+            }));
+          
+          set((state) => ({
+            deviceAnalyses: state.deviceAnalyses.map((a, i) =>
+              i === state.deviceAnalyses.length - 1
+                ? { ...a, records: [...updatedRecords, ...newRecords] }
+                : a
+            ),
+          }));
+        }
+      },
+
+      analyzeDeviceData: () => {
+        const state = get();
+        const records = state.deviceAnalyses[state.deviceAnalyses.length - 1]?.records || [];
+        
+        const analyzedRecords: DeviceRecord[] = records.map((record) => {
+          const qualifiedConditions: string[] = [];
+          const unqualifiedConditions: string[] = [];
+          
+          const cond30Days22 = record.onlineDays30 >= 22;
+          if (cond30Days22) {
+            qualifiedConditions.push(`30天满22天 ✓ (${record.onlineDays30}天)`);
+          } else {
+            unqualifiedConditions.push(`30天满22天 ✗ (${record.onlineDays30}/22天)`);
+          }
+          
+          const cond30Days10 = record.onlineDays10 >= 10;
+          if (cond30Days10) {
+            qualifiedConditions.push(`30天满10天 ✓ (${record.onlineDays10}天)`);
+          } else {
+            unqualifiedConditions.push(`30天满10天 ✗ (${record.onlineDays10}/10天)`);
+          }
+          
+          const cond30Days20Persons = record.onlinePersons20 >= 20;
+          if (cond30Days20Persons) {
+            qualifiedConditions.push(`30天满20人 ✓ (${record.onlinePersons20}人)`);
+          } else {
+            unqualifiedConditions.push(`30天满20人 ✗ (${record.onlinePersons20}/20人)`);
+          }
+          
+          const condCheckIn30Days = record.checkInCount >= 12;
+          const condCheckIn7Days = record.checkInCount >= 4;
+          const condCheckIn = condCheckIn30Days || condCheckIn7Days;
+          
+          if (condCheckIn30Days) {
+            qualifiedConditions.push(`30天打卡12次 ✓ (${record.checkInCount}次)`);
+          } else if (condCheckIn7Days) {
+            qualifiedConditions.push(`7天打卡4次 ✓ (${record.checkInCount}次)`);
+          } else {
+            unqualifiedConditions.push(`打卡次数 ✗ (${record.checkInCount}次, 需要30天≥12或7天≥4)`);
+          }
+          
+          let status: 'qualified' | 'unqualified' | 'not_started' = 'not_started';
+          if (record.onlineDays30 === 0 && record.onlineDays10 === 0 && 
+              record.onlinePersons20 === 0 && record.checkInCount === 0 && record.deviceCount === 0) {
+            status = 'not_started';
+          } else if (cond30Days22 && cond30Days10 && cond30Days20Persons && condCheckIn) {
+            status = 'qualified';
+          } else {
+            status = 'unqualified';
+          }
+          
+          return { 
+            ...record, 
+            status, 
+            note: unqualifiedConditions.length > 0 ? unqualifiedConditions.join(' | ') : record.note 
+          };
+        });
+        
+        const qualifiedUsers = analyzedRecords.filter((r) => r.status === 'qualified').length;
+        const unqualifiedUsers = analyzedRecords.filter((r) => r.status === 'unqualified').length;
+        const notStartedUsers = analyzedRecords.filter((r) => r.status === 'not_started').length;
+        
+        const analysis: DeviceAnalysis = {
+          id: 'analysis_' + Date.now(),
+          analysisDate: new Date().toISOString().split('T')[0],
+          period: `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`,
+          totalUsers: analyzedRecords.length,
+          qualifiedUsers,
+          unqualifiedUsers,
+          notStartedUsers,
+          qualificationRate: analyzedRecords.length > 0 ? (qualifiedUsers / analyzedRecords.length) * 100 : 0,
+          records: analyzedRecords,
+        };
+        
+        set((state) => ({ deviceAnalyses: [...state.deviceAnalyses, analysis] }));
+        return analysis;
+      },
+
+      calculateSalary: () => {
+        const state = get();
+        const latestAnalysis = state.deviceAnalyses[state.deviceAnalyses.length - 1];
+        if (!latestAnalysis) return [];
+        
+        return latestAnalysis.records.map((record) => {
+          const deviceTotal = record.deviceCount * state.devicePrice;
+          const grossSalary = state.baseSalary + deviceTotal;
+          
+          return {
+            userId: record.id,
+            userName: record.userName,
+            team: record.team,
+            baseSalary: state.baseSalary,
+            deviceCount: record.deviceCount,
+            devicePrice: state.devicePrice,
+            deviceTotal,
+            grossSalary,
+            status: record.status,
+            qualifiedConditions: record.status === 'qualified' 
+              ? ['30天满22天', '30天满10天', '30天满20人', '打卡达标']
+              : [],
+            unqualifiedConditions: record.status === 'unqualified' ? [record.note || '未达标'] : [],
+          };
+        });
+      },
+
+      getDeviceAnalysisHistory: () => {
+        return get().deviceAnalyses;
       },
     }),
     { name: 'team-deploy-admin' }

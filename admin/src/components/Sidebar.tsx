@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   HomeIcon, UsersIcon, UserGroupIcon, DocumentChartBarIcon, 
   CurrencyDollarIcon, ArrowsRightLeftIcon, Cog6ToothIcon,
-  SignalIcon
+  SignalIcon, DevicePhoneMobileIcon
 } from '@heroicons/react/24/outline';
 
 const menuItems = [
@@ -11,6 +11,7 @@ const menuItems = [
   { path: '/teams', icon: UserGroupIcon, label: '团队管理' },
   { path: '/records', icon: DocumentChartBarIcon, label: '铺设记录' },
   { path: '/salary', icon: CurrencyDollarIcon, label: '工资配置' },
+  { path: '/device-analysis', icon: DevicePhoneMobileIcon, label: '碰一下设备' },
   { path: '/import-export', icon: ArrowsRightLeftIcon, label: '导入导出' },
   { path: '/settings', icon: Cog6ToothIcon, label: '系统设置' },
 ];
