@@ -52,7 +52,7 @@ jobs:
 
       - name: Build Debug APK
         working-directory: ./app/android
-        run: ./gradlew assembleDebug --info
+        run: ./gradlew assembleDebug --stacktrace
 
       - name: List APK files
         working-directory: ./app/android
