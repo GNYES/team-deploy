@@ -2,17 +2,18 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   HomeIcon, UsersIcon, UserGroupIcon, DocumentChartBarIcon, 
   CurrencyDollarIcon, ArrowsRightLeftIcon, Cog6ToothIcon,
-  SignalIcon, DevicePhoneMobileIcon
+  SignalIcon, DevicePhoneMobileIcon, MapPinIcon
 } from '@heroicons/react/24/outline';
 
 const menuItems = [
-  { path: '/', icon: HomeIcon, label: '控制台' },
+  { path: '/', icon: HomeIcon, label: '数据看板' },
+  { path: '/n-device-analysis', icon: DevicePhoneMobileIcon, label: 'N设备数据分析' },
+  { path: '/ring-analysis', icon: MapPinIcon, label: '小蓝环数据分析' },
   { path: '/users', icon: UsersIcon, label: '用户管理' },
   { path: '/teams', icon: UserGroupIcon, label: '团队管理' },
   { path: '/records', icon: DocumentChartBarIcon, label: '铺设记录' },
-  { path: '/salary', icon: CurrencyDollarIcon, label: '工资配置' },
-  { path: '/device-analysis', icon: DevicePhoneMobileIcon, label: '碰一下设备' },
-  { path: '/import-export', icon: ArrowsRightLeftIcon, label: '导入导出' },
+  { path: '/salary', icon: CurrencyDollarIcon, label: '薪资计算' },
+  { path: '/import-export', icon: ArrowsRightLeftIcon, label: '数据导入' },
   { path: '/settings', icon: Cog6ToothIcon, label: '系统设置' },
 ];
 
@@ -28,7 +29,7 @@ export default function Sidebar() {
             <SignalIcon className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-slate-800">TeamDeploy</h1>
+            <h1 className="font-bold text-slate-800">聚韵电子</h1>
             <p className="text-xs text-slate-500">管理后台</p>
           </div>
         </div>
@@ -36,7 +37,7 @@ export default function Sidebar() {
 
       <nav className="p-4 space-y-1">
         {menuItems.map(({ path, icon: Icon, label }) => {
-          const isActive = location.pathname === path;
+          const isActive = location.pathname.startsWith(path);
           return (
             <button
               key={path}

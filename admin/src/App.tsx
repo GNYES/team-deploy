@@ -8,6 +8,12 @@ import Salary from '@/pages/Salary';
 import ImportExport from '@/pages/ImportExport';
 import Settings from '@/pages/Settings';
 import DeviceAnalysis from '@/pages/DeviceAnalysis';
+import DeviceBreakdown from '@/pages/DeviceBreakdown';
+import Salespeople from '@/pages/Salespeople';
+import QualifiedComparison from '@/pages/QualifiedComparison';
+import SalaryDetails from '@/pages/SalaryDetails';
+import NDeviceAnalysis from '@/pages/NDeviceAnalysis';
+import RingAnalysis from '@/pages/RingAnalysis';
 
 export default function App() {
   return (
@@ -24,6 +30,13 @@ export default function App() {
             <Route path="/import-export" element={<ImportExport />} />
             <Route path="/device-analysis" element={<DeviceAnalysis />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/device-breakdown" element={<DeviceBreakdown />} />
+            <Route path="/device-breakdown/:province" element={<DeviceBreakdown />} />
+            <Route path="/salespeople" element={<Salespeople />} />
+            <Route path="/qualified-comparison" element={<QualifiedComparison />} />
+            <Route path="/salary-details" element={<SalaryDetails />} />
+            <Route path="/n-device-analysis" element={<NDeviceAnalysis />} />
+            <Route path="/ring-analysis" element={<RingAnalysis />} />
           </Routes>
         </main>
       </div>

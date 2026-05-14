@@ -32,6 +32,7 @@ interface AdminStore {
   analyzeDeviceData: () => DeviceAnalysis;
   calculateSalary: () => SalaryCalculation[];
   getDeviceAnalysisHistory: () => DeviceAnalysis[];
+  resetData: () => void;
 }
 
 const defaultSalaryConfig: SalaryConfig = {
@@ -54,36 +55,58 @@ const defaultSalaryConfig: SalaryConfig = {
   updatedAt: new Date().toISOString(),
 };
 
+const defaultUsers: User[] = [
+  { id: '1', name: '王建国', phone: '13800138001', team: '华东战队', role: 'leader', devices: 45, rings: 23, createdAt: '2024-01-01' },
+  { id: '2', name: '李明辉', phone: '13800138002', team: '华南战队', role: 'leader', devices: 42, rings: 21, createdAt: '2024-01-01' },
+  { id: '3', name: '张伟', phone: '13800138003', team: '华东战队', role: 'member', devices: 38, rings: 19, createdAt: '2024-01-02' },
+  { id: '4', name: '刘强', phone: '13800138004', team: '华北战队', role: 'leader', devices: 35, rings: 17, createdAt: '2024-01-02' },
+  { id: '5', name: '陈刚', phone: '13800138005', team: '西南战队', role: 'member', devices: 32, rings: 15, createdAt: '2024-01-03' },
+  { id: '6', name: '赵磊', phone: '13800138006', team: '华东战队', role: 'member', devices: 28, rings: 14, createdAt: '2024-01-03' },
+  { id: '7', name: '孙鹏', phone: '13800138007', team: '华南战队', role: 'member', devices: 25, rings: 12, createdAt: '2024-01-04' },
+  { id: '8', name: '周涛', phone: '13800138008', team: '华北战队', role: 'member', devices: 22, rings: 11, createdAt: '2024-01-04' },
+  { id: '9', name: '吴昊', phone: '13800138009', team: '西南战队', role: 'member', devices: 20, rings: 10, createdAt: '2024-01-05' },
+  { id: '10', name: '郑鑫', phone: '13800138010', team: '西北战队', role: 'leader', devices: 18, rings: 9, createdAt: '2024-01-05' },
+];
+
+const defaultTeams: Team[] = [
+  { id: '1', name: '华东战队', leader: '王建国', members: 3, devices: 111, rings: 56, region: '华东' },
+  { id: '2', name: '华南战队', leader: '李明辉', members: 2, devices: 67, rings: 33, region: '华南' },
+  { id: '3', name: '华北战队', leader: '刘强', members: 2, devices: 57, rings: 28, region: '华北' },
+  { id: '4', name: '西南战队', leader: '陈刚', members: 2, devices: 52, rings: 25, region: '西南' },
+  { id: '5', name: '西北战队', leader: '郑鑫', members: 1, devices: 18, rings: 9, region: '西北' },
+];
+
+const defaultDeployRecords: DeployRecord[] = [
+  { id: '1', userId: '1', userName: '王建国', team: '华东战队', date: '2024-01-15', devices: 5, rings: 3, location: '上海市浦东新区' },
+  { id: '2', userId: '2', userName: '李明辉', team: '华南战队', date: '2024-01-15', devices: 4, rings: 2, location: '广州市天河区' },
+  { id: '3', userId: '3', userName: '张伟', team: '华东战队', date: '2024-01-15', devices: 3, rings: 2, location: '杭州市西湖区' },
+  { id: '4', userId: '1', userName: '王建国', team: '华东战队', date: '2024-01-14', devices: 4, rings: 2, location: '上海市静安区' },
+  { id: '5', userId: '2', userName: '李明辉', team: '华南战队', date: '2024-01-14', devices: 3, rings: 2, location: '深圳市南山区' },
+];
+
+const defaultAchievements: Achievement[] = [
+  { id: '1', name: '初露锋芒', description: '铺设第一台设备', icon: '🌟', requirement: 1, type: 'devices', reward: 50 },
+  { id: '2', name: '小有名气', description: '铺设10台设备', icon: '⭐', requirement: 10, type: 'devices', reward: 100 },
+  { id: '3', name: '铺设达人', description: '铺设50台设备', icon: '🏆', requirement: 50, type: 'devices', reward: 300 },
+  { id: '4', name: '铺设大师', description: '铺设100台设备', icon: '👑', requirement: 100, type: 'devices', reward: 500 },
+  { id: '5', name: '蓝环收集者', description: '铺设50个蓝环', icon: '💎', requirement: 50, type: 'rings', reward: 200 },
+  { id: '6', name: '团队之星', description: '获得团队排名第一', icon: '🌈', requirement: 1, type: 'team', reward: 1000 },
+];
+
+const defaultDailyTasks: DailyTask[] = [
+  { id: '1', title: '铺设任务', description: '每日铺设设备目标', target: 5, reward: 100, active: true },
+  { id: '2', title: '蓝环任务', description: '每日铺设蓝环目标', target: 10, reward: 50, active: true },
+];
+
 export const useAdminStore = create<AdminStore>()(
   persist(
     (set, get) => ({
       salaryConfig: defaultSalaryConfig,
-      users: [
-        { id: '1', name: '王建国', phone: '13800138001', team: '华东战队', role: 'leader', devices: 45, rings: 23, createdAt: '2024-01-01' },
-        { id: '2', name: '李明辉', phone: '13800138002', team: '华南战队', role: 'leader', devices: 42, rings: 21, createdAt: '2024-01-01' },
-        { id: '3', name: '张伟', phone: '13800138003', team: '华东战队', role: 'member', devices: 38, rings: 19, createdAt: '2024-01-02' },
-        { id: '4', name: '刘强', phone: '13800138004', team: '华北战队', role: 'leader', devices: 35, rings: 17, createdAt: '2024-01-02' },
-        { id: '5', name: '陈刚', phone: '13800138005', team: '西南战队', role: 'member', devices: 32, rings: 15, createdAt: '2024-01-03' },
-        { id: '6', name: '赵磊', phone: '13800138006', team: '华东战队', role: 'member', devices: 28, rings: 14, createdAt: '2024-01-03' },
-        { id: '7', name: '孙鹏', phone: '13800138007', team: '华南战队', role: 'member', devices: 25, rings: 12, createdAt: '2024-01-04' },
-        { id: '8', name: '周涛', phone: '13800138008', team: '华北战队', role: 'member', devices: 22, rings: 11, createdAt: '2024-01-04' },
-        { id: '9', name: '吴昊', phone: '13800138009', team: '西南战队', role: 'member', devices: 20, rings: 10, createdAt: '2024-01-05' },
-        { id: '10', name: '郑鑫', phone: '13800138010', team: '西北战队', role: 'leader', devices: 18, rings: 9, createdAt: '2024-01-05' },
-      ],
-      teams: [
-        { id: '1', name: '华东战队', leader: '王建国', members: 3, devices: 111, rings: 56, region: '华东' },
-        { id: '2', name: '华南战队', leader: '李明辉', members: 2, devices: 67, rings: 33, region: '华南' },
-        { id: '3', name: '华北战队', leader: '刘强', members: 2, devices: 57, rings: 28, region: '华北' },
-        { id: '4', name: '西南战队', leader: '陈刚', members: 2, devices: 52, rings: 25, region: '西南' },
-        { id: '5', name: '西北战队', leader: '郑鑫', members: 1, devices: 18, rings: 9, region: '西北' },
-      ],
-      deployRecords: [
-        { id: '1', userId: '1', userName: '王建国', team: '华东战队', date: '2024-01-15', devices: 5, rings: 3, location: '上海市浦东新区' },
-        { id: '2', userId: '2', userName: '李明辉', team: '华南战队', date: '2024-01-15', devices: 4, rings: 2, location: '广州市天河区' },
-        { id: '3', userId: '3', userName: '张伟', team: '华东战队', date: '2024-01-15', devices: 3, rings: 2, location: '杭州市西湖区' },
-        { id: '4', userId: '1', userName: '王建国', team: '华东战队', date: '2024-01-14', devices: 4, rings: 2, location: '上海市静安区' },
-        { id: '5', userId: '2', userName: '李明辉', team: '华南战队', date: '2024-01-14', devices: 3, rings: 2, location: '深圳市南山区' },
-      ],
+      users: defaultUsers,
+      teams: defaultTeams,
+      deployRecords: defaultDeployRecords,
+      achievements: defaultAchievements,
+      dailyTasks: defaultDailyTasks,
       incomeRecords: [],
       achievements: [
         { id: '1', name: '初露锋芒', description: '铺设第一台设备', icon: '🌟', requirement: 1, type: 'devices', reward: 50 },
